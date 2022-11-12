@@ -63,7 +63,8 @@ class CopyOp():
             return False
         if not os.path.exists(self.copyToRoot):# 存在しない場合は作成
             os.makedirs(self.copyToRoot, exist_ok=True)
-        for paths in self.fileList:
+        NUM_FILES=len(self.fileList)
+        for i,paths in enumerate(self.fileList):
             path_abs,path_rel=paths
             copy2path=os.path.join(self.copyToRoot,path_rel)
             copy2path=copy2path.replace(os.sep,r"/")
@@ -73,6 +74,11 @@ class CopyOp():
             else:
                 os.makedirs(os.path.dirname(copy2path), exist_ok=True)
                 shutil.copy2(path_abs, copy2path)
+            print("\r"+str(((i+1)/NUM_FILES)*100)+"%",end="")
+        self.fileList.clear()
+        self.copyFromChildDirs.clear()
+        self.copyToRoot=None
+        self.copyFromRoot=None
         return True
 
 
