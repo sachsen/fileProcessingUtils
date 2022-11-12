@@ -83,12 +83,18 @@ class Application(tk.Frame):
             if number<2:
 
                 file = filedialog.askdirectory()
+                if file is None or file=="":
+                    return
             else:
                 res = messagebox.askyesno("select mode", "yes: select directory\n no: select file")
                 if res:
                     file = filedialog.askdirectory()
+                    if file is None or file=="":
+                        return
                 else:
                     file = filedialog.askopenfile()
+                    if file is None or file=="":
+                        return
                     file=file.name
             if number<2:
                 self.FilePathEntry[number].delete(0, tk.END)
@@ -108,8 +114,11 @@ class Application(tk.Frame):
         cp.copyFromRoot=self.FilePathEntry[1].get()
         for i in range(2,len(self.FilePathEntry)):
             cp.copyFromChildDirs.append(self.FilePathEntry[i].get())
-        cp.copyFile()
-        pass
+        result=cp.copyFile()
+        if result:
+            messagebox.showinfo("info","Copied")
+        else:
+            messagebox.showinfo("info","not copied")
 
 def main():
     win = tk.Tk()

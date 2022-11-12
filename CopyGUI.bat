@@ -1,2 +1,1 @@
-python ./fileCopy/test.py
-pause
+python ./fileCopy/GUI.py

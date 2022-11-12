@@ -45,7 +45,9 @@ class CopyOp():
 
         for path in self.copyFromChildDirs:
             path_abs=os.path.join(self.copyFromRoot,path)
+            path_abs=path_abs.replace(os.sep,r"/")
             paths=glob.glob(path_abs)
+            paths =[p.replace(os.sep, r"/") for p in paths]
             paths2=[]
             for p in paths:
                 path_rel=os.path.relpath(p,self.copyFromRoot)
@@ -58,14 +60,19 @@ class CopyOp():
         if not self.fetchFileList(output=output):
             if output:
                 print("not copied")
-            return
+            return False
         if not os.path.exists(self.copyToRoot):# 存在しない場合は作成
             os.makedirs(self.copyToRoot, exist_ok=True)
         for paths in self.fileList:
             path_abs,path_rel=paths
             copy2path=os.path.join(self.copyToRoot,path_rel)
-            os.makedirs(os.path.dirname(copy2path), exist_ok=True)
-            shutil.copy2(path_abs,copy2path)
+            copy2path=copy2path.replace(os.sep,r"/")
 
+            if os.path.isdir(path_abs):
+                shutil.copytree(path_abs, copy2path, dirs_exist_ok=True)
+            else:
+                os.makedirs(os.path.dirname(copy2path), exist_ok=True)
+                shutil.copy2(path_abs, copy2path)
+        return True
 
 
